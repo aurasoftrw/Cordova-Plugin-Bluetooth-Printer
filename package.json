@@ -1,0 +1,11 @@
+{
+  "name": "Cordova-Plugin-Bluetooth-Printer",
+  "version": "1.0.0",
+  "cordova": {
+    "id": "Cordova-Plugin-Bluetooth-Printer",
+    "platforms": [
+      "android"
+    ]
+  },
+  "description": "A cordova plugin for bluetooth printer for android platform, which support text printing and POS printing."
+}
