@@ -296,7 +296,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 
 
     boolean printText(CallbackContext callbackContext, String string2, String string3, String string4, String string5) throws IOException {
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		String dateTime = dtf.format(now);
         try {
@@ -318,6 +318,11 @@ public class BluetoothPrinter extends CordovaPlugin {
             mmOutputStream.write((int)((byte)(8 | arrby[2])));
             mmOutputStream.write(new byte[]{27, 33, 16});
             mmOutputStream.write((c + "-" + string5 + "\n").getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write("____________________ \n".getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write((int)((byte)(8 | arrby[2])));
+            mmOutputStream.write(new byte[]{27, 33, 16});
             mmOutputStream.write(new byte[]{27, 33, 8});
             mmOutputStream.write(new byte[]{27, 97, 1});
             mmOutputStream.write("Please Wait for your turn \n".getBytes("GBK"));
