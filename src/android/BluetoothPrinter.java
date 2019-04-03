@@ -32,6 +32,15 @@ import android.graphics.Bitmap.Config;
 import android.util.Xml.Encoding;
 import android.util.Base64;
 
+// date and time 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+
+
 public class BluetoothPrinter extends CordovaPlugin {
 	private static final String LOG_TAG = "BluetoothPrinter";
 	BluetoothAdapter mBluetoothAdapter;
@@ -91,6 +100,16 @@ public class BluetoothPrinter extends CordovaPlugin {
     				// String msg = args.getString(0);
     				String[] arrstring = args.getString(0).split("\\s+");
     				printText(callbackContext, arrstring[0].toString(), arrstring[1].toString(), arrstring[2].toString(), arrstring[3].toString());
+    			} catch (IOException e) {
+    				Log.e(LOG_TAG, e.getMessage());
+    				e.printStackTrace();
+    			}
+    			return true;
+    		}
+  		else if (action.equals("CutPaper")) {
+    			try {
+    				String msg = args.getString(0);
+    				CutPaper(callbackContext, msg.getString(0));
     			} catch (IOException e) {
     				Log.e(LOG_TAG, e.getMessage());
     				e.printStackTrace();
@@ -277,6 +296,9 @@ public class BluetoothPrinter extends CordovaPlugin {
 
 
     boolean printText(CallbackContext callbackContext, String string2, String string3, String string4, String string5) throws IOException {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		String dateTime = dtf.format(now);
         try {
             byte[] arrby = new byte[]{27, 33, 0};
             char c = string2.charAt(0);
@@ -301,6 +323,9 @@ public class BluetoothPrinter extends CordovaPlugin {
             mmOutputStream.write("Please Wait for your turn \n".getBytes("GBK"));
             mmOutputStream.write(new byte[]{27, 97, 1});
             mmOutputStream.write(("Total customer(S) waiting: " + string4 + " \n").getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write(("Issued on: " + dateTime + " \n").getBytes("GBK"));
             mmOutputStream.write("\n\n\n\n\n\n\n\n\n\n\n".getBytes("GBK"));
             mmOutputStream.flush();
             callbackContext.success("Data Sent to Printer");
@@ -356,6 +381,27 @@ public class BluetoothPrinter extends CordovaPlugin {
         }
         return false;
     }
+
+     boolean CutPaper(CallbackContext callbackContext, String string2) throws IOException {
+        try {
+            mmOutputStream = mmSocket.getOutputStream();
+            mmOutputStream.write(new byte[]{10, 10, 29, 86, 1});
+            mmOutputStream.flush();
+            Log.d((String)LOG_TAG, (String)"Data sent successfully...");
+            do {
+                return false;
+                break;
+            } while (true);
+        }
+        catch (Exception exception) {
+            String string3 = exception.getMessage();
+            Log.e((String)LOG_TAG, (String)string3);
+            exception.printStackTrace();
+            callbackContext.error(string3);
+            return false;
+        }
+    }
+
 
 
     boolean printPOSCommand(CallbackContext callbackContext, byte[] buffer) throws IOException {
