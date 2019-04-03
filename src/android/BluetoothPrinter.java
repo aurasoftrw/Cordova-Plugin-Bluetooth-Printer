@@ -88,8 +88,9 @@ public class BluetoothPrinter extends CordovaPlugin {
 		}
 		else if (action.equals("printText")) {
     			try {
-    				String msg = args.getString(0);
-    				printText(callbackContext, msg);
+    				// String msg = args.getString(0);
+    				String[] arrstring = args.getString(0).split("\\s+");
+    				printText(callbackContext, arrstring[0].toString(), arrstring[1].toString(), arrstring[2].toString(), arrstring[3].toString());
     			} catch (IOException e) {
     				Log.e(LOG_TAG, e.getMessage());
     				e.printStackTrace();
@@ -255,24 +256,65 @@ public class BluetoothPrinter extends CordovaPlugin {
 	}
 
 	//This will send data to bluetooth printer
-	boolean printText(CallbackContext callbackContext, String msg) throws IOException {
-		try {
+	// boolean printText(CallbackContext callbackContext, String msg) throws IOException {
+	// 	try {
 
-			mmOutputStream.write(msg.getBytes());
+	// 		mmOutputStream.write(msg.getBytes());
 
-			// tell the user data were sent
-			//Log.d(LOG_TAG, "Data Sent");
-			callbackContext.success("Data Sent");
-			return true;
+	// 		// tell the user data were sent
+	// 		//Log.d(LOG_TAG, "Data Sent");
+	// 		callbackContext.success("Data Sent");
+	// 		return true;
 
-		} catch (Exception e) {
-			String errMsg = e.getMessage();
-			Log.e(LOG_TAG, errMsg);
-			e.printStackTrace();
-			callbackContext.error(errMsg);
-		}
-		return false;
-	}
+	// 	} catch (Exception e) {
+	// 		String errMsg = e.getMessage();
+	// 		Log.e(LOG_TAG, errMsg);
+	// 		e.printStackTrace();
+	// 		callbackContext.error(errMsg);
+	// 	}
+	// 	return false;
+	// }
+
+
+    boolean printText(CallbackContext callbackContext, String string2, String string3, String string4, String string5) throws IOException {
+        try {
+            byte[] arrby = new byte[]{27, 33, 0};
+            char c = string2.charAt(0);
+            mmOutputStream = mmSocket.getOutputStream();
+            mmOutputStream.write("\n\n\n\n".getBytes("GBK"));
+            arrby[2] = (byte)(8 | arrby[2]);
+            mmOutputStream.write((int)((byte)(8 | arrby[2])));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write("BANK OF KIGALI \n".getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write((string2 + "-" + string3 + "\n").getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write("Your Token Number is \n".getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write("____________________ \n".getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write((int)((byte)(8 | arrby[2])));
+            mmOutputStream.write(new byte[]{27, 33, 16});
+            mmOutputStream.write((c + "-" + string5 + "\n").getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 33, 8});
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write("Please Wait for your turn \n".getBytes("GBK"));
+            mmOutputStream.write(new byte[]{27, 97, 1});
+            mmOutputStream.write(("Total customer(S) waiting: " + string4 + " \n").getBytes("GBK"));
+            mmOutputStream.write("\n\n\n\n\n\n\n\n\n\n\n".getBytes("GBK"));
+            mmOutputStream.flush();
+            callbackContext.success("Data Sent to Printer");
+            return true;
+        }
+        catch (Exception exception) {
+            String string6 = exception.getMessage();
+            Log.e((String)LOG_TAG, (String)string6);
+            exception.printStackTrace();
+            callbackContext.error(string6);
+            return false;
+        }
+    }
+
 
 	//This will send data to bluetooth printer
     boolean printImage(CallbackContext callbackContext, String msg) throws IOException {
