@@ -318,11 +318,6 @@ public class BluetoothPrinter extends CordovaPlugin {
             mmOutputStream.write((int)((byte)(8 | arrby[2])));
             mmOutputStream.write(new byte[]{27, 33, 16});
             mmOutputStream.write((c + "-" + string5 + "\n").getBytes("GBK"));
-            mmOutputStream.write(new byte[]{27, 97, 1});
-            mmOutputStream.write("____________________ \n".getBytes("GBK"));
-            mmOutputStream.write(new byte[]{27, 97, 1});
-            mmOutputStream.write((int)((byte)(8 | arrby[2])));
-            mmOutputStream.write(new byte[]{27, 33, 16});
             mmOutputStream.write(new byte[]{27, 33, 8});
             mmOutputStream.write(new byte[]{27, 97, 1});
             mmOutputStream.write("Please Wait for your turn \n".getBytes("GBK"));
