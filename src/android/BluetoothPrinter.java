@@ -390,7 +390,6 @@ public class BluetoothPrinter extends CordovaPlugin {
             Log.d((String)LOG_TAG, (String)"Data sent successfully...");
             do {
                 return false;
-                break;
             } while (true);
         }
         catch (Exception exception) {
